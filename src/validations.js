@@ -22,9 +22,7 @@ const validations = {
 };
 
 
-async function validate(request) {
-  let data = request.body;
-
+async function validate(data, session_id) {
   let validationFunctions   = [];
   let missingFields         = [];
 
@@ -44,7 +42,7 @@ async function validate(request) {
   }
 
   if (missingFields.length > 0) {
-    let missingValues = await getMissingValues(missingFields, request.params.id);
+    let missingValues = await getMissingValues(missingFields, session_id);
     data = {...data, ...missingValues};
   }
 
@@ -60,7 +58,7 @@ async function validate(request) {
   return errors;
 }
 
-async function getMissingValues(missingFields, id) {
+async function getMissingValues(missingFields, session_id) {
 
   // fetch missing fields. Builds a single query to fetch what we need from our tables.
   let tables = {};
@@ -80,7 +78,7 @@ async function getMissingValues(missingFields, id) {
 
 
   // Merge missing values back into main json object, so we can run validations
-  let missingValues = await pg(tables).select(columnSelectors).where({id: id}).first();
+  let missingValues = await pg(tables).select(columnSelectors).where({ session_id }).first();
   return missingValues;
 }
 

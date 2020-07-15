@@ -1,6 +1,7 @@
 var faker = require('faker');
 var fs = require('fs');
 var yaml = require('yaml');
+var shortid = require('shortid');
 
 var pg = require('knex')({
     client: 'pg',
@@ -45,7 +46,9 @@ async function insert(tableName, json) {
     return;
   }
 
-  let response = await pg(tableName).insert({ data: JSON.stringify(json) });
+  let [ session_id ] = await pg('session').insert({ shortid: shortid.generate() }).returning('id');
+  console.log(session_id);
+  let response = await pg(tableName).insert({ session_id: session_id, data: JSON.stringify(json) });
 
   return response;
 }

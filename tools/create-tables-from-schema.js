@@ -27,8 +27,13 @@ async function createTable(tableName) {
 
   let response = await pg.schema.createTable(tableName, table => {
     table.increments();
-    table.timestamps(false,true);
+
+    table.integer('session_id');
     table.jsonb('data');
+    table.timestamps(false,true);
+
+    table.unique('session_id'); // ??
+    table.foreign('session_id').references('session.id');
   });
 
   return response;
