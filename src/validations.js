@@ -1,5 +1,10 @@
 
 function equals(a, b) {
+  // only compare if both defined. this may not be what we want here.
+  if (!a || !b) {
+    return true;
+  }
+
   return a === b;
 }
 

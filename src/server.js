@@ -1,22 +1,14 @@
-var fs = require('fs');
-var yaml = require('yaml');
+const { pg, save } = require("./db.js");
+const validations  = require("./validations.js");
+const schema       = require("./schema.js");
 
-var pg = require('knex')({
-    client: 'pg',
-    connection: process.env.DB_URI,
-    searchPath: ['knex', 'public'],
-});
-
-const validate    = require("./json-schema-validation.js");
-const validations = require("./validations.js");
-const schema      = require("./schema.js");
+const { validate, errorsText } = require("./json-schema-validation.js");
+const { groupByTable }         = require("./util.js");
 
 const shortid = require('shortid');
-
-// Webapp start
 const fastify = require('fastify')({
   logger: true
-})
+});
 
 // XXX: Can probably use the fastify built in schema validation here?
 for (let table of schema.tables) {
@@ -29,8 +21,10 @@ for (let table of schema.tables) {
       reply.status(404).send(`Unknown ID ${ request.params.id }`);
     }
 
-    let response = await pg(table).select('data').where({ id }).first();
-    reply.send(response.data);
+    let response = await pg(table).select('data')
+                                  .where({ session_id: id })
+                                  .first() || { data: {} };
+    reply.send(response.data || {});
   });
 }
 
@@ -44,7 +38,9 @@ fastify.post('/create', async function (request, reply) {
 
 // Save route. Handles calling schema validation, custom validators, saving all fields into correct tables.
 fastify.post('/save/:id', async function (request, reply) {
-  const { id } = await pg('session').select('id').where({ shortid: request.params.id }).first() || {};
+  const { id } = await pg('session').select('id')
+                                    .where({ shortid: request.params.id })
+                                    .first() || {};
 
   if (!id) {
     return reply.status(404).send(`Unknown ID ${ request.params.id }`);
@@ -52,9 +48,8 @@ fastify.post('/save/:id', async function (request, reply) {
 
   const data  = request.body;
   const valid = validate(data);
-
   if (!valid) {
-    return reply.status(400).send(validate.errorsText());
+    return reply.status(400).send(errorsText(validate.errors));
   }
 
   const errors = await validations.validate(data, id);
@@ -62,31 +57,13 @@ fastify.post('/save/:id', async function (request, reply) {
     return reply.status(400).send(errors);
   }
 
-
-  let tableData = {};
-  for (let key of Object.keys(data)) {
-    if (!data[key]) { continue; }
-
-    let [table, field] = key.split('.');
-    tableData[table] = { ...tableData[table], ...{ [field]: data[key] } };
-  }
-
-
-  // ^ Mappings between tables and fields calculated above. This saves each
-  let saveData = Object.keys(tableData)
-                       .map(tableName => save(tableName, tableData[tableName], id));
+  const tableData = groupByTable(data);
+  let saveData    = Object.keys(tableData)
+                          .map(tableName => save(tableName, tableData[tableName], id));
   await Promise.all(saveData);
 
   reply.send(tableData);
 })
-
-function save(table, data, session_id) {
-  // postgres upsert, createOrUpdate
-  return pg.raw(
-    "INSERT INTO ?? as existing (session_id, data) VALUES (?, ?) ON CONFLICT (session_id) DO UPDATE SET data = existing.data || excluded.data;",
-    [table, session_id, data]
-  );
-}
 
 fastify.listen(3000, '0.0.0.0', function (err, address) {
   if (err) {

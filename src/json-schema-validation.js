@@ -23,4 +23,7 @@ for (table of tables) {
 let schema   = { properties };
 let validate = ajv.compile(schema);
 
-module.exports = validate;
+module.exports = {
+  validate,
+  errorsText: ajv.errorsText,
+};
