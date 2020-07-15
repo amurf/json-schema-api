@@ -11,6 +11,7 @@ const validate    = require("./src/json-schema-validation.js");
 const validations = require("./src/validations.js");
 const schema      = require("./src/schema.js");
 
+
 // Webapp start
 const fastify = require('fastify')({
   logger: true
@@ -27,6 +28,10 @@ for (let table of schema.tables) {
     reply.send(response.data);
   });
 }
+
+fastify.post('/create', async function (request, reply) {
+
+});
 
 // Save route. Handles calling schema validation, custom validators, saving all fields into correct tables.
 fastify.post('/save/:id', async function (request, reply) {
