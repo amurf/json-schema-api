@@ -1,0 +1,33 @@
+version: "2.3"
+
+services:
+
+  backend:
+    command: /app/docker/scripts/startup.sh node index.js
+    build:
+      context: .
+    environment:
+      DB_URI: postgres://postgres:password@postgres:5432/guitarhorse
+      DEBUG: 'knex:query'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    volumes:
+      - "$PWD/index.js:/app/index.js"
+      - "$PWD/schema.yaml:/app/schema.yaml"
+      - "$PWD/tools:/app/tools"
+      - "$PWD/src:/app/src"
+      - "$PWD/docker:/app/docker"
+
+  postgres:
+    image: postgres:latest
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: guitarhorse
