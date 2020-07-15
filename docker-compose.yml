@@ -3,7 +3,7 @@ version: "2.3"
 services:
 
   backend:
-    command: /app/docker/scripts/startup.sh node index.js
+    command: /app/docker/scripts/startup.sh npm run start
     build:
       context: .
     environment:
@@ -15,12 +15,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - "$PWD/index.js:/app/index.js"
-      - "$PWD/schema.yaml:/app/schema.yaml"
-      - "$PWD/tools:/app/tools"
       - "$PWD/src:/app/src"
-      - "$PWD/docker:/app/docker"
-
+      - "$PWD/tools:/app/tools"
   postgres:
     image: postgres:latest
     healthcheck:
