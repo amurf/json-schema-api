@@ -12,19 +12,40 @@ const fastify = require('fastify')({
 
 // XXX: Can probably use the fastify built in schema validation here?
 for (let table of schema.tables) {
-  fastify.get(`/${ table }/:id`, async function(request, reply) {
-    const { id } = await pg('session').select('id')
-                                      .where({ shortid: request.params.id })
-                                      .first() || {};
+  fastify.route({
+    method: 'GET',
+    url: `/${ table }/:id`,
+    schema: {
+      querystring: {
+        fields: { type: 'array' },
+      },
+    },
+    handler: async function(request, reply) {
+      const { id } = await pg('session').select('id')
+                                        .where({ shortid: request.params.id })
+                                        .first() || {};
 
-    if (!id) {
-      reply.status(404).send(`Unknown ID ${ request.params.id }`);
-    }
+      if (!id) {
+        reply.status(404).send(`Unknown ID ${ request.params.id }`);
+      }
 
-    let response = await pg(table).select('data')
-                                  .where({ session_id: id })
-                                  .first() || { data: {} };
-    reply.send(response.data || {});
+      let response = await pg(table).select('data')
+                                    .where({ session_id: id })
+                                    .first();
+
+      // if no row currently, just return empty ob
+      if (!response.data) {
+        reply.send({});
+      }
+
+      let requestedKeys = request.query.fields;
+      const data = requestedKeys
+                   ? requestedKeys.reduce((a, e) => (a[e] = response.data[e], a), {})
+                   : response.data;
+
+
+      reply.send(data);
+    },
   });
 }
 
