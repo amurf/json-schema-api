@@ -10,7 +10,6 @@ const fastify = require('fastify')({
   logger: true
 });
 
-// XXX: Can probably use the fastify built in schema validation here?
 for (let table of schema.tables) {
   fastify.route({
     method: 'GET',
@@ -18,6 +17,12 @@ for (let table of schema.tables) {
     schema: {
       querystring: {
         fields: { type: 'array' },
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: schema.propertiesForTable(table),
+        },
       },
     },
     handler: async function(request, reply) {
