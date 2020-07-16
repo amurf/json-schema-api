@@ -4,10 +4,9 @@
 
     <div class="errors" v-if="errors.length">
       <ul>
-        <li v-for="error in errors">{{ errors }}</li>
+        <li v-for="error in errors">{{ error }}</li>
       </ul>
     </div>
-
 
       <!--
         this could be done outside of the template with an object to map
