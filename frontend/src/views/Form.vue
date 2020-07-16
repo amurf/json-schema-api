@@ -83,4 +83,9 @@ button {
 li {
   list-style: none;
 }
+
+.errors {
+  color: red;
+}
+
 </style>
