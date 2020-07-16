@@ -75,7 +75,7 @@ fastify.post('/save/:id', async function (request, reply) {
   const data  = request.body;
   const valid = validate(data);
   if (!valid) {
-    return reply.status(400).send(errorsText(validate.errors));
+    return reply.status(400).send([ errorsText(validate.errors) ]);
   }
 
   const errors = await validations.validate(data, id);
