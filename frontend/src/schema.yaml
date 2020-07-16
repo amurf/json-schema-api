@@ -1,0 +1,10 @@
+organisation:
+  - name: name
+    type: string
+  - name: postcode
+    type: number
+    maximum: 9999
+
+service:
+  - name: name
+    type: string

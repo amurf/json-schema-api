@@ -2,21 +2,46 @@ version: "2.3"
 
 services:
 
-  backend:
+  frontend:
+    command: npm run serve
+    build:
+      context: ./frontend/
+    volumes:
+      - "$PWD/frontend/src:/app/src"
+    labels:
+      traefik.enable: true
+      traefik.http.services.frontend.loadbalancer.server.port: 8080
+      traefik.http.routers.frontend.entrypoints: web
+      traefik.http.routers.frontend.rule: PathPrefix(`/`)
+      traefik.http.routers.frontend.priority: 1001
+      traefik.http.routers.frontend.middlewares: frontend@docker
+      traefik.http.middlewares.frontend.stripprefix.prefixes: /
+      traefik.tags: json-schema-api
+
+  api:
     command: /app/docker/scripts/startup.sh npm run start
     build:
       context: .
     environment:
-      DB_URI: postgres://postgres:password@postgres:5432/guitarhorse
+      DB_URI: postgres://postgres:password@postgres:5432/json-schema-api
       DEBUG: 'knex:query'
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - 3000:3000
     volumes:
       - "$PWD/src:/app/src"
       - "$PWD/tools:/app/tools"
+    labels:
+      traefik.enable: true
+      traefik.http.services.api.loadbalancer.server.port: 3000
+      traefik.http.routers.api.entrypoints: web
+      traefik.http.routers.api.rule: PathPrefix(`/api/`)
+      traefik.http.routers.api.priority: 1002
+      traefik.http.routers.api.middlewares: api@docker
+      traefik.http.middlewares.api.stripprefix.prefixes: /api/
+      traefik.tags: json-schema-api
+
+
   postgres:
     image: postgres:latest
     healthcheck:
@@ -26,4 +51,23 @@ services:
       retries: 5
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: guitarhorse
+      POSTGRES_DB: json-schema-api
+
+  proxy:
+    image: traefik:v2.2
+    ports:
+      - 8010:80
+      - 8012:8080
+    command:
+      - --api=true
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --api.debug=true
+      - --providers.docker=true
+      - --providers.docker.swarmMode=false
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.constraints=Label(`traefik.tags`,`json-schema-api`)
+      - --entrypoints.web.address=:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
