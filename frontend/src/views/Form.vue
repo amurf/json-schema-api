@@ -34,8 +34,8 @@ import schema from '@/schema.yaml'
 export default {
   name: 'Form',
   data() {
-
     // This builds the { $table.$field } data structure for storing
+    // data in the correct format for the /save route.
     let dataModel = {};
     let questions = [];
 
