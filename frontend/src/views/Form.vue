@@ -18,8 +18,8 @@
       <label>{{ question.name }}:{{ question.type }}</label>
       <input v-if="question.type === 'number'" v-model.number="dataModel[question.name]" type="text" />
       <input v-else v-model="dataModel[question.name]" type="text" />
-
     </div>
+
     <pre>{{ dataModel }}</pre>
     <button @click="save()">Save data</button>
   </div>
