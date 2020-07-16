@@ -34,28 +34,23 @@ import schema from '@/schema.yaml'
 export default {
   name: 'Form',
   data() {
+
+    // This builds the { $table.$field } data structure for storing
     let dataModel = {};
+    let questions = [];
+
     for (let table of Object.keys(schema)) {
       for (let field of schema[table]) {
-        dataModel[`${ table }.${ field.name }`] = undefined;
+        const fullName = `${ table }.${ field.name }`;
+        dataModel[fullName] = undefined;
+        questions.push({...field, ...{ name: fullName }});
       }
     }
 
-    return { dataModel, errors: [] };
+    return { dataModel, questions, errors: [] };
   },
   computed: {
     uuid() { return this.$store.state.uuid },
-    questions() {
-      return Object.keys(schema).reduce((accum, elem) => {
-        for (let field of schema[elem]) {
-          accum.push({
-            name: `${ elem }.${ field.name }`,
-            type: field.type,
-          });
-        }
-        return accum;
-      }, []);
-    }
   },
   methods: {
     async save() {
