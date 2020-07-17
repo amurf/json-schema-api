@@ -15,9 +15,9 @@
         This is just a proof of concept really below.
       -->
     <div v-for="question in questions">
-      <label>{{ question.name }}:{{ question.type }}</label>
-      <input v-if="question.type === 'number'" v-model.number="dataModel[question.name]" type="text" />
-      <input v-else v-model="dataModel[question.name]" type="text" />
+      <question-label :data-model="dataModel" :for="question.name" :label="question.label" />
+      <input v-if="question.type === 'number'" v-model.number.lazy="dataModel[question.name]" :id="question.name" type="text" />
+      <input v-else v-model.lazy="dataModel[question.name]" :id="question.name" type="text" />
     </div>
 
     <pre>{{ dataModel }}</pre>
@@ -26,31 +26,30 @@
 </template>
 <script>
 import axios from 'axios'
+import QuestionLabel from '@/components/QuestionLabel';
 
 // Would wrap this in composition api to add additional
 // helper functions to prevent copy-paste.
 import schema from '/app/config/schema.yaml'
+import forms  from '/app/config/forms.yaml'
 
 export default {
   name: 'Form',
+  components: { QuestionLabel },
   data() {
     // This builds the { $table.$field } data structure for storing
     // data in the correct format for the /save route.
     let dataModel = {};
-    let questions = [];
-
-    for (let table of Object.keys(schema)) {
-      for (let field of schema[table]) {
-        const fullName = `${ table }.${ field.name }`;
-        dataModel[fullName] = undefined;
-        questions.push({...field, ...{ name: fullName }});
-      }
-    }
-
-    return { dataModel, questions, errors: [] };
+    return { dataModel, currentForm: 'registration', errors: [] };
   },
   computed: {
     uuid() { return this.$store.state.uuid },
+    questions() {
+      return forms[this.currentForm].map(item => {
+        const [table, name] = item.name.split('.');
+        return { ...item, ...schema[table][name] };
+      });
+    },
   },
   methods: {
     async save() {
@@ -81,6 +80,10 @@ li {
 
 .errors {
   color: red;
+}
+
+label {
+  display: block; 
 }
 
 </style>
