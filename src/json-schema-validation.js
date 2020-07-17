@@ -8,9 +8,9 @@ const ajv = new Ajv({allErrors: true});
 const { data, tables } = require('./schema.js');
 let properties = {};
 for (table of tables) {
-  for (field of data[table]) {
-    const key = `${ table }.${ field.name }`;
-    properties[key] = field;
+  for (field of Object.keys(data[table])) {
+    const key = `${ table }.${ field }`;
+    properties[key] = data[table][field];
   }
 }
 

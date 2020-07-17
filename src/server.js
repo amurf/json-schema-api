@@ -21,7 +21,7 @@ for (let table of schema.tables) {
       response: {
         200: {
           type: 'object',
-          properties: schema.propertiesForTable(table),
+          properties: schema.data[table],
         },
       },
     },

@@ -1,10 +1,17 @@
 organisation:
-  - name: name
+  name:
     type: string
-  - name: postcode
+  address:
+    type: string
+  postcode:
     type: number
     maximum: 9999
 
 service:
-  - name: name
+  name:
     type: string
+  address:
+    type: string
+  postcode:
+    type: number
+    maximum: 9999

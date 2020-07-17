@@ -14,15 +14,15 @@ const { data } = require('../src/schema.js');
 let insertPromises = [];
 
 for (const table of Object.keys(data)) {
-  let columns = data[table];
+  let json = Object.keys(data[table]).reduce((accum, columnName) => {
+    let column = data[table][columnName];
 
-  let json = columns.reduce((accum, column) => {
     if (column.type === 'string') {
-      accum[column.name] = faker.random.word();
+      accum[columnName] = faker.random.word();
     } else {
     // All the modules are inconsistent with max/maximum, going to need to normalize
     // this somewhere. Sigh.
-      accum[column.name] = faker.random[column.type]({ max: column.maximum });
+      accum[columnName] = faker.random[column.type]({ max: column.maximum });
     }
     return accum;
   }, {});
@@ -44,7 +44,6 @@ async function insert(tableName, json) {
   }
 
   let [ session_id ] = await pg('session').insert({ shortid: shortid.generate() }).returning('id');
-  console.log(session_id);
   let response = await pg(tableName).insert({ session_id: session_id, data: JSON.stringify(json) });
 
   return response;
