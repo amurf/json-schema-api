@@ -1,8 +1,5 @@
 # Project specific
 
-# volume mounted in
-frontend/src/schema/schema.yaml
-
 # Logs
 logs
 *.log
