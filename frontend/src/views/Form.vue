@@ -29,7 +29,7 @@ import axios from 'axios'
 
 // Would wrap this in composition api to add additional
 // helper functions to prevent copy-paste.
-import schema from '@/schema.yaml'
+import schema from '/app/config/schema.yaml'
 
 export default {
   name: 'Form',

@@ -7,11 +7,10 @@ var pg = require('knex')({
     searchPath: ['knex', 'public'],
 });
 
-const file = fs.readFileSync('./schema.yaml', 'utf8');
-const data = yaml.parse(file);
+const { data, tables } = require('../src/schema.js');
 
 
-let createPromises = Object.keys(data).map(tableName => createTable(tableName));
+let createPromises = Object.keys(data).map(createTable);
 
 Promise.all(createPromises)
        .then(resolves => console.log("All tables created successfully"))

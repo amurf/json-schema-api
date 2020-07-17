@@ -1,6 +1,6 @@
 const fs = require('fs');
 const yaml = require('yaml');
-const file = fs.readFileSync('./schema.yaml', 'utf8')
+const file = fs.readFileSync('./config/schema.yaml', 'utf8')
 
 
 let data   = yaml.parse(file)

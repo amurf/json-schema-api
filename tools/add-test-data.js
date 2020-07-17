@@ -9,10 +9,7 @@ var pg = require('knex')({
     searchPath: ['knex', 'public'],
 });
 
-const file = fs.readFileSync('./schema.yaml', 'utf8');
-const data = yaml.parse(file);
-
-
+const { data } = require('../src/schema.js');
 
 let insertPromises = [];
 

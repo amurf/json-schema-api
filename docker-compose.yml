@@ -8,6 +8,7 @@ services:
       context: ./frontend/
     volumes:
       - "$PWD/frontend/src:/app/src"
+      - "$PWD/config:/app/config"
     labels:
       traefik.enable: true
       traefik.http.services.frontend.loadbalancer.server.port: 8080
@@ -31,6 +32,7 @@ services:
     volumes:
       - "$PWD/src:/app/src"
       - "$PWD/tools:/app/tools"
+      - "$PWD/config:/app/config"
     labels:
       traefik.enable: true
       traefik.http.services.api.loadbalancer.server.port: 3000
