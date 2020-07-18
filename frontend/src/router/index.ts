@@ -36,6 +36,11 @@ Vue.use(VueRouter)
       name: 'Add table',
       component: () => import(/* webpackChunkName: "add-table" */ '../components/AddTable.vue')
     },
+    {
+      path: 'save',
+      name: 'Save',
+      component: () => import(/* webpackChunkName: "save" */ '../components/Save.vue')
+    },
     ],
   }
 ]
