@@ -1,7 +1,10 @@
-registration:
+organisationRegistration:
   - name: organisation.name
     label: What is the organisation name?
   - name: organisation.postcode
     label: What is the organisation postcode?
+serviceRegistration:
   - name: service.name
     label: "Which service would you like to register at <strong>{{ read['organisation.name'] }}</strong>"
+  - name: service.postcode
+    label: What's the service postcode? (you answered {{ read['organisation.postcode'] }} for organisation)

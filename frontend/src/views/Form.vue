@@ -1,5 +1,6 @@
 <template>
   <div class="form">
+    <h1>Example form</h1>
     <h2>Fill in the questions</h2>
 
     <div class="errors" v-if="errors.length">
@@ -21,7 +22,15 @@
     </div>
 
     <pre>{{ dataModel }}</pre>
-    <button @click="save()">Save data</button>
+
+    <div>
+    <button v-if="currentForm == 'serviceRegistration'" @click="currentForm = 'organisationRegistration'">Prev</button>
+    <button v-if="canNavigate" @click="currentForm = 'serviceRegistration'">Next</button>
+    </div>
+
+
+    <br>
+    <button @click="save()">Submit</button>
   </div>
 </template>
 <script>
@@ -40,7 +49,11 @@ export default {
     // This builds the { $table.$field } data structure for storing
     // data in the correct format for the /save route.
     let dataModel = {};
-    return { dataModel, currentForm: 'registration', errors: [] };
+    return {
+      dataModel,
+      errors: [],
+      currentForm: 'organisationRegistration',
+    };
   },
   computed: {
     uuid() { return this.$store.state.uuid },
@@ -49,6 +62,16 @@ export default {
         const [table, name] = item.name.split('.');
         return { ...item, ...schema[table][name] };
       });
+    },
+    canNavigate() {
+      const validFields = this.questions.reduce((accum, item) => {
+        if (this.dataModel[item.name]) {
+          return accum + 1;
+        }
+        return accum;
+      }, 0);
+
+      return (validFields == this.questions.length);
     },
   },
   methods: {
@@ -83,7 +106,7 @@ li {
 }
 
 label {
-  display: block; 
+  display: block;
 }
 
 </style>
