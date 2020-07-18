@@ -17,6 +17,26 @@ Vue.use(VueRouter)
     // this generates a separate chunk (form.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "form" */ '../views/Form.vue')
+  },
+  {
+    path: '/designer',
+    name: 'Designer',
+    // route level code-splitting
+    // this generates a separate chunk (form.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "designer" */ '../views/Designer.vue'),
+    children: [
+    {
+      path: 'table/:name',
+      name: 'Table Details',
+      component: () => import(/* webpackChunkName: "table-details" */ '../components/TableDetails.vue')
+    },
+    {
+      path: 'add',
+      name: 'Add table',
+      component: () => import(/* webpackChunkName: "add-table" */ '../components/AddTable.vue')
+    },
+    ],
   }
 ]
 

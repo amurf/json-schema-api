@@ -1,7 +1,10 @@
 <template>
   <div class="home">
+
+    <h1>Form example</h1>
     <button @click="start()">Start</button>
-    <h1> {{ this.uuid }} </h1>
+    <h1>API Designer</h1>
+    <router-link to="/designer">Designer</router-link>
   </div>
 </template>
 

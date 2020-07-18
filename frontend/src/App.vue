@@ -1,11 +1,15 @@
 <template>
   <div id="app">
-    <h1>Example form</h1>
+    <router-link v-if="$route.path != '/'" class='home-link' to="/">Home</router-link>
     <router-view/>
   </div>
 </template>
 
 <style>
+.home-link {
+  position: absolute;
+  left: 5px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
