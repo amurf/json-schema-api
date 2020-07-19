@@ -1,13 +1,20 @@
 <template>
   <div class="form">
     <h1>Example form</h1>
-    <h2>Fill in the questions</h2>
 
-    <div class="errors" v-if="errors.length">
-      <ul>
-        <li v-for="error in errors">{{ error }}</li>
-      </ul>
-    </div>
+    <!-- no session -->
+    <template v-if="!currentForm && !uuid">
+      <button @click="start()">Start</button>
+    </template>
+
+    <template v-else>
+      <h2>Fill in the questions</h2>
+
+      <div class="errors" v-if="errors.length">
+        <ul>
+          <li v-for="error in errors">{{ error }}</li>
+        </ul>
+      </div>
 
       <!--
         this could be done outside of the template with an object to map
@@ -15,22 +22,23 @@
 
         This is just a proof of concept really below.
       -->
-    <div v-for="question in questions">
-      <question-label :data-model="dataModel" :for="question.name" :label="question.label" />
-      <input v-if="question.type === 'number'" v-model.number.lazy="dataModel[question.name]" :id="question.name" type="text" />
-      <input v-else v-model.lazy="dataModel[question.name]" :id="question.name" type="text" />
-    </div>
+        <div v-for="question in questions">
+          <question-label :data-model="dataModel" :for="question.name" :label="question.label" />
+            <input v-if="question.type === 'number'" v-model.number.lazy="dataModel[question.name]" :id="question.name" type="text" />
+            <input v-else v-model.lazy="dataModel[question.name]" :id="question.name" type="text" />
+        </div>
 
-    <pre>{{ dataModel }}</pre>
+        <pre>{{ dataModel }}</pre>
 
-    <div>
-    <button v-if="currentForm == 'serviceRegistration'" @click="currentForm = 'organisationRegistration'">Prev</button>
-    <button v-if="canNavigate" @click="currentForm = 'serviceRegistration'">Next</button>
-    </div>
+        <div>
+          <button v-if="currentForm == 'serviceRegistration'" @click="currentForm = 'organisationRegistration'">Prev</button>
+          <button v-if="canNavigate" @click="currentForm = 'serviceRegistration'">Next</button>
+        </div>
 
 
-    <br>
-    <button @click="save()">Submit</button>
+        <br>
+        <button @click="save()">Submit</button>
+    </template>
   </div>
 </template>
 <script>
@@ -46,19 +54,21 @@ export default {
   name: 'Form',
   components: { QuestionLabel },
   data() {
-    // This builds the { $table.$field } data structure for storing
-    // data in the correct format for the /save route.
+
+    let path = ['organisationRegistration', 'serviceRegistration'];
     let dataModel = {};
     return {
       dataModel,
+      path,
       errors: [],
-      currentForm: 'organisationRegistration',
+      currentForm: '',
     };
   },
   computed: {
     uuid() { return this.$store.state.uuid },
+    form() { return forms[this.currentForm] || [] },
     questions() {
-      return forms[this.currentForm].map(item => {
+      return this.form.map(item => {
         const [table, name] = item.name.split('.');
         return { ...item, ...schema[table][name] };
       });
@@ -75,6 +85,10 @@ export default {
     },
   },
   methods: {
+    async start() {
+      await this.$store.dispatch('start');
+      this.currentForm = this.path[0];
+    },
     async save() {
       try {
         let response = await axios.post(`/api/save/${ this.uuid }`, this.dataModel);
@@ -83,11 +97,6 @@ export default {
         this.errors = error.response.data;
       }
     },
-  },
-  created() {
-    if (!this.uuid) {
-      this.$router.push({name: 'Home'});
-    }
   },
 }
 </script>
