@@ -44,12 +44,6 @@
 <script>
 import axios from 'axios'
 import QuestionLabel from '@/components/QuestionLabel';
-
-// Would wrap this in composition api to add additional
-// helper functions to prevent copy-paste.
-import schema from '/app/config/schema.yaml'
-import forms  from '/app/config/forms.yaml'
-
 export default {
   name: 'Form',
   components: { QuestionLabel },
@@ -66,11 +60,13 @@ export default {
   },
   computed: {
     uuid() { return this.$store.state.uuid },
-    form() { return forms[this.currentForm] || [] },
+    schema() { return this.$store.state.schema },
+    forms() { return this.$store.state.forms },
+    form() { return this.forms[this.currentForm] || [] },
     questions() {
       return this.form.map(item => {
         const [table, name] = item.name.split('.');
-        return { ...item, ...schema[table][name] };
+        return { ...item, ...this.schema[table][name] };
       });
     },
     canNavigate() {
@@ -97,6 +93,11 @@ export default {
         this.errors = error.response.data;
       }
     },
+  },
+  created() {
+    if (this.uuid) {
+      this.currentForm = 'organisationRegistration';
+    }
   },
 }
 </script>

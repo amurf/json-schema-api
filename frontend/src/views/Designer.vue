@@ -25,7 +25,6 @@ export default {
   name: 'Designer',
   data() {
     return {
-      schema: {},
       showAddTable: false,
       tableName: '',
       newColumn: {
@@ -34,7 +33,8 @@ export default {
       },
     };
   },
-  computed: { 
+  computed: {
+    schema() { return this.$store.state.schema },
     tables() {
       return Object.keys(this.schema);
     },

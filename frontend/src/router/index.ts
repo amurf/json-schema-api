@@ -13,17 +13,16 @@ Vue.use(VueRouter)
   {
     path: '/form',
     name: 'Form',
-    // route level code-splitting
-    // this generates a separate chunk (form.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "form" */ '../views/Form.vue')
+  },
+  {
+    path: '/editor',
+    name: 'Form Editor',
+    component: () => import(/* webpackChunkName: "form-editor" */ '../views/FormEdit.vue')
   },
   {
     path: '/designer',
     name: 'Designer',
-    // route level code-splitting
-    // this generates a separate chunk (form.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "designer" */ '../views/Designer.vue'),
     children: [
     {
