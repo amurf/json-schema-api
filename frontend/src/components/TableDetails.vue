@@ -56,26 +56,4 @@ export default {
 }
 </script>
 <style scoped>
-
-button {
-  padding: 0.5em;
-}
-
-li {
-  list-style: none;
-}
-
-.errors {
-  color: red;
-}
-
-label {
-  display: block;
-}
-
-.table-form {
-  padding: 1em;
-  margin-top: 1em;
-}
-
 </style>

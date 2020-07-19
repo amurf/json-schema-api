@@ -20,8 +20,4 @@ export default {
 }
 </script>
 <style scoped>
-
-button {
-  padding: 0.5em;
-}
 </style>

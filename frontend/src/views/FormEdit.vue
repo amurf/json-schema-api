@@ -71,28 +71,4 @@ export default {
 }
 </script>
 <style scoped>
-
-button {
-  padding: 0.5em;
-}
-
-li {
-  list-style: none;
-}
-
-.errors {
-  color: red;
-}
-
-label {
-  display: block;
-}
-.edit-field {
-  margin: 1em;
-}
-
-.form-edit button {
-  margin: 1em;
-}
-
 </style>
