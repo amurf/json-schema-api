@@ -26,6 +26,7 @@ services:
     environment:
       DB_URI: postgres://postgres:password@postgres:5432/json-schema-api
       DEBUG: 'knex:query'
+      SCHEMA_FILE: ./config/cadc.yaml
     depends_on:
       postgres:
         condition: service_healthy
