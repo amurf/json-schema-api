@@ -21,7 +21,7 @@ for (let table of schema.tables) {
       response: {
         200: {
           type: 'object',
-          properties: schema.data[table],
+          properties: schema.propertiesForTable(table),
         },
       },
     },
@@ -39,8 +39,8 @@ for (let table of schema.tables) {
                                     .first();
 
       // if no row currently, just return empty ob
-      if (!response.data) {
-        reply.send({});
+      if (!response) {
+        return reply.send({});
       }
 
       let requestedKeys = request.query.fields;
@@ -49,7 +49,9 @@ for (let table of schema.tables) {
                    : response.data;
 
 
-      reply.send(data);
+      const prefixedData = Object.keys(data).reduce((accum, key) => (accum[`${table}.${key}`] = data[key], accum), {})
+
+      reply.send(prefixedData);
     },
   });
 }
