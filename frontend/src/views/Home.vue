@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <h1>CADC</h1>
+    <router-link to="/cadc">CADC</router-link>
 
     <h1>Form example</h1>
     <router-link to="/form">Form</router-link>

@@ -4,13 +4,15 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-import schema from '/app/config/schema.yaml';
-import forms  from '/app/config/forms.yaml';
+import schema    from '/app/config/schema.yaml';
+import forms     from '/app/config/forms.yaml';
+import cadcForms from '/app/config/cadc.yaml';
 
 const initialState = {
   uuid: '',
   schema: schema,
   forms: forms,
+  cadc: cadcForms,
 };
 
 export default new Vuex.Store({

@@ -1,0 +1,37 @@
+organisation:
+  name:
+    type: string
+  address:
+    type: string
+  suburb:
+    type: string
+  postcode:
+    type: number
+    maximum: 9999
+  abn:
+    type: number
+    maximum: 999999999
+  comments:
+    type: string
+
+contract:
+  name:
+    type: string
+  id:
+    type: number
+  schedule_number:
+    type: string
+  clients:
+    type: number
+  clients_method:
+    type: string
+    enum: ["Unique", "Estimate"]
+  total_individual_sessions:
+    type: number
+  hours_individual_sessions:
+    type: number
+  group_sessions:
+    type: number
+  hours_group_sessions:
+    type: number
+

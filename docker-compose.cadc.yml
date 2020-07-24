@@ -1,0 +1,6 @@
+version: "2.3"
+
+services:
+  api:
+    environment:
+      SCHEMA_FILE: ./config/cadc.yaml

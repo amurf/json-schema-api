@@ -16,6 +16,11 @@ Vue.use(VueRouter)
     component: () => import(/* webpackChunkName: "form" */ '../views/Form.vue')
   },
   {
+    path: '/cadc',
+    name: 'CADC',
+    component: () => import(/* webpackChunkName: "cadc" */ '../views/CADC.vue')
+  },
+  {
     path: '/editor',
     name: 'Form Editor',
     component: () => import(/* webpackChunkName: "form-editor" */ '../views/FormEdit.vue')
