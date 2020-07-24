@@ -21,7 +21,7 @@ var pg = require('knex')({
 // XXX: yaml config?
 const validations = {
   'organisation.name' : [
-    { 'func': 'equals', 'compareWith': 'service.name' },
+    // { 'func': 'equals', 'compareWith': 'service.name' },
     // { 'func': 'equals', 'compareWith': 'service.postcode' },
   ],
 };
